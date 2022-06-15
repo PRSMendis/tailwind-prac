@@ -1,19 +1,20 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, FunctionComponent } from "react";
 import Results from "./Results";
 import useBreedList from "./useBreedList";
 import ThemeContext from "./ThemeContext";
+import { PetApiResponse, Animal, Pet } from "./APIResponsesTypes";
 
-const ANIMALS = ["bird", "cat", "dog", "rabbit", "reptile"];
+const ANIMALS: Animal[] = ["bird", "cat", "dog", "rabbit", "reptile"];
 
-const SearchParams = () => {
+const SearchParams: FunctionComponent = () => {
   const [location, updateLocation] = useState("");
-  const [animal, updateAnimal] = useState("");
+  const [animal, updateAnimal] = useState("" as Animal);
   const [breed, updateBreed] = useState("");
-  const [pets, setPets] = useState([]);
+  const [pets, setPets] = useState([] as Pet[]);
   const [breeds] = useBreedList(animal);
   const [theme, setTheme] = useContext(ThemeContext);
 
-  useEffect(() => {
+  void useEffect(() => {
     requestPets();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -21,7 +22,7 @@ const SearchParams = () => {
     const res = await fetch(
       `http://pets-v2.dev-apis.com/pets?animal=${animal}&location=${location}&breed=${breed}`
     );
-    const json = await res.json();
+    const json = (await res.json()) as PetApiResponse;
 
     setPets(json.pets);
   }
@@ -32,7 +33,7 @@ const SearchParams = () => {
       className="p-10 mb-10 rounded-lg bg-gray-200 shadow-lg flex flex-col justify-center items-center"
         onSubmit={(e) => {
           e.preventDefault();
-          requestPets();
+          void requestPets();
         }}
       >
         <label htmlFor="location">
@@ -53,11 +54,11 @@ const SearchParams = () => {
             id="animal"
             value={animal}
             onChange={(e) => {
-              updateAnimal(e.target.value);
+              updateAnimal(e.target.value as Animal);
               updateBreed("");
             }}
             onBlur={(e) => {
-              updateAnimal(e.target.value);
+              updateAnimal(e.target.value as Animal);
               updateBreed("");
             }}
           >

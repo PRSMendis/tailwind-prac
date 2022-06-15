@@ -2,6 +2,6 @@
 
 import { createContext } from "react";
 
-const ThemeContext = createContext(["green", () => {}]);
+const ThemeContext = createContext<[string, (theme:string) => void]>(["green", () => {}]);
 
 export default ThemeContext;
